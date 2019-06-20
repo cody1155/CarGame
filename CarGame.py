@@ -1,19 +1,15 @@
 import pygame
 import random
-vel = 5
-coney = 15
+
 
 black = (0, 0, 0)
 green = (0, 128, 0)
 yellow = (255, 255, 0)
 red = (255, 0, 0)
 
+
 car_image = pygame.image.load('car2.png')
 cone_image = pygame.image.load('traffic_cone.png')
-
-
-vel = 5
-coney = 15
 
 
 class player(object):
@@ -28,6 +24,7 @@ class player(object):
         screen.blit(car_image, (self.x, self.y))
         self.hitbox = (self.x + 8, self.y - 3, self.width + 12, self.height + 40)
         pygame.draw.rect(screen, (255, 0, 0,), self.hitbox, 2)
+
 
 class obstacle(object):
     def __init__(self, x, y, width, height, velocity):
@@ -48,9 +45,6 @@ class obstacle(object):
             self.y += self.velocity
 
 
-
-
-
 def draw_screen():
     screen.fill(yellow)
     pygame.draw.rect(screen, green, (0, 0, 75, 600))
@@ -64,9 +58,6 @@ def draw_screen():
 
 
 def execute_game():
-
-    global vel
-    global coney
 
     game = True
     while game:
