@@ -1,19 +1,55 @@
 import pygame
+import random
+vel = 5
+coney = 15
 
 black = (0, 0, 0)
 green = (0, 128, 0)
 yellow = (255, 255, 0)
 red = (255, 0, 0)
 
-car = pygame.image.load('car2.png')
-cone = pygame.image.load('traffic_cone.png')
+car_image = pygame.image.load('car2.png')
+cone_image = pygame.image.load('traffic_cone.png')
 
-x = 85
-y = 470
-width = 64
-height = 64
+
 vel = 5
 coney = 15
+
+
+class player(object):
+    def __init__ (self, x, y, width, height):
+        self.x = x
+        self.y = y
+        self.width = width
+        self.height = height
+        self.hitbox = (self.x + 8, self.y - 3, self.width + 12, self.height+ 40)
+
+    def draw(self, screen):
+        screen.blit(car_image, (self.x, self.y))
+        self.hitbox = (self.x + 8, self.y - 3, self.width + 12, self.height + 40)
+        pygame.draw.rect(screen, (255, 0, 0,), self.hitbox, 2)
+
+class obstacle(object):
+    def __init__(self, x, y, width, height, velocity):
+        self.x = x
+        self.y = y
+        self.width = width
+        self.height = height
+        self.velocity = velocity
+        self.hitbox = (self.x + 1, self.y - 2, self.width + 8, self.height+ 16)
+
+    def draw(self, screen):
+        screen.blit(cone_image, (self.x, self.y))
+        self.hitbox = (self.x + 1, self.y - 2, self.width + 8, self.height+ 16)
+        pygame.draw.rect(screen, (255, 0, 0,), self.hitbox, 2)
+        if self.y > 580:
+            self.y = -80    
+        else:
+            self.y += self.velocity
+
+
+
+
 
 def draw_screen():
     screen.fill(yellow)
@@ -22,20 +58,17 @@ def draw_screen():
     pygame.draw.rect(screen, black, (80, 0, 110, 600))
     pygame.draw.rect(screen, black, (195, 0, 110, 600))
     pygame.draw.rect(screen, black, (310, 0, 110, 600))
-    screen.blit(car, (x, y))
-    screen.blit(cone, (95, coney))
-    screen.blit(cone, (215, coney))
-    screen.blit(cone, (325, coney))
+    car.draw(screen)
+    cone.draw(screen)
     pygame.display.update()
+
 
 def execute_game():
 
-    global x
-    global y
-    global coney
     global vel
-    game = True
+    global coney
 
+    game = True
     while game:
 
         pygame.time.delay(100)
@@ -45,16 +78,11 @@ def execute_game():
 
         keys = pygame.key.get_pressed()
 
-        if keys[pygame.K_LEFT] and x >= 100:
-            x -= 117
+        if keys[pygame.K_LEFT] and car.x >= 100:
+            car.x -= 117
 
-        if keys[pygame.K_RIGHT] and x < 300:
-            x += 117
-
-        if coney > 500:
-            coney = 15
-        else:
-            coney += vel
+        if keys[pygame.K_RIGHT] and car.x < 300:
+            car.x += 117
 
         draw_screen()
 
@@ -62,10 +90,14 @@ def execute_game():
 def game_init():
     global size
     global screen
+    global car
+    global cone
     pygame.init()
     size = (500, 600)
     screen = pygame.display.set_mode(size)
     pygame.display.set_caption("Car Game")
+    car = player(85, 470, 64, 64)
+    cone = obstacle(95, -80, 64, 64, 10)
 
 
 def main():
