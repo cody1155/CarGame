@@ -7,6 +7,7 @@ green = (0, 128, 0)
 yellow = (255, 255, 0)
 red = (255, 0, 0)
 
+flag = 0
 
 car_image = pygame.image.load('car2.png')
 cone_image = pygame.image.load('traffic_cone.png')
@@ -26,6 +27,7 @@ class player(object):
         pygame.draw.rect(screen, (255, 0, 0,), self.hitbox, 2)
 
 
+
 class obstacle(object):
     def __init__(self, x, y, width, height, velocity):
         self.x = x
@@ -37,13 +39,17 @@ class obstacle(object):
 
     def draw(self, screen):
         screen.blit(cone_image, (self.x, self.y))
-        self.hitbox = (self.x + 1, self.y - 2, self.width + 8, self.height+ 16)
+        self.hitbox = (self.x - 2, self.y - 2, self.width + 8, self.height+ 16)
         pygame.draw.rect(screen, (255, 0, 0,), self.hitbox, 2)
         if self.y > 580:
             self.y = -80    
         else:
             self.y += self.velocity
 
+    def hit(self):
+        print("hit")
+
+        
 
 def draw_screen():
     screen.fill(yellow)
@@ -53,14 +59,16 @@ def draw_screen():
     pygame.draw.rect(screen, black, (195, 0, 110, 600))
     pygame.draw.rect(screen, black, (310, 0, 110, 600))
     car.draw(screen)
-    cone.draw(screen)
+    cone.draw(screen)    
     pygame.display.update()
 
 
 def execute_game():
-
+    global flag
     game = True
     while game:
+
+        
 
         pygame.time.delay(100)
         for event in pygame.event.get():
@@ -75,6 +83,15 @@ def execute_game():
         if keys[pygame.K_RIGHT] and car.x < 300:
             car.x += 117
 
+        if cone.hitbox[1] >= car.hitbox[1] - 30 and cone.hitbox[0] >= car.hitbox[0]:
+            if flag == 0:
+                cone.hit()
+                flag = 1
+        if cone.hitbox[1] > 580:
+            flag = 0
+            
+            
+
         draw_screen()
 
 
@@ -83,6 +100,8 @@ def game_init():
     global screen
     global car
     global cone
+    global flag
+    
     pygame.init()
     size = (500, 600)
     screen = pygame.display.set_mode(size)
