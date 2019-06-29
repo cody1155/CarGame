@@ -2,6 +2,12 @@ import pygame
 import random
 
 
+pygame.init()
+size = (500, 600)
+screen = pygame.display.set_mode(size)
+pygame.display.set_caption("Car Game")
+
+
 black = (0, 0, 0)
 green = (0, 128, 0)
 yellow = (255, 255, 0)
@@ -45,17 +51,17 @@ class player(object):
 
 
 class obstacle(object):
-    def __init__(self, x, y, width, height, velocity, drawing):
+    def __init__(self, x, y, width, height, velocity):
         self.x = x
         self.y = y
         self.width = width
         self.height = height
         self.velocity = velocity
         self.hitbox = (self.x + 1, self.y - 2, self.width + 8, self.height+ 16)
-        self.drawing = drawing
+        self.visible = True
 
     def draw(self, screen):
-        if self.drawing == True:
+        if self.visible:
             screen.blit(cone_image, (self.x, self.y))
             self.hitbox = (self.x - 2, self.y - 2, self.width + 8, self.height+ 16)
             pygame.draw.rect(screen, (255, 0, 0,), self.hitbox, 2)
@@ -64,10 +70,11 @@ class obstacle(object):
             else:
                 self.y += self.velocity
 
+
     def hit(self):
         print("hit")
-
         
+
 def draw_screen(x):
     screen.fill(yellow)
     pygame.draw.rect(screen, green, (0, 0, 75, 600))
@@ -81,94 +88,87 @@ def draw_screen(x):
         cone1.draw(screen)
     if x == 2:
         cone2.draw(screen)
- 
-   
-  
+        
     font = pygame.font.SysFont("comicsans", 30, True)
     text = font.render("Score: " +str(score), 1, (255, 255, 255))
     screen.blit(text, (390, 10))
     pygame.display.update()
 
 
-def execute_game():
-    global flag
-    global score
-    
-    spawn_check = 0
-    first = True
+spawn_check = 0
+first = True
+
+car = player(85, 470, 64, 64)
+cone1 = obstacle(95, -80, 64, 64, 10)
+cone2 = obstacle(210, -80, 64, 64, 10)
  
-    game = True
-    while game:
+game = True
 
-        check = True
+check1 = True
+check2 = True
 
-        pygame.time.delay(100)
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                game = False
-        
-        if first == True:
-            spawn_check = random.randint(1, 2)
+while game:
 
-        first = False
-
-        if cone1.hitbox[1] >= 580 or cone2.hitbox[1] >= 580:
-            spawn_check = 2
     
-        keys = pygame.key.get_pressed()
+    pygame.time.delay(100)
 
-        if keys[pygame.K_LEFT] and car.x >= 100:
-            car.x -= 117
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            game = False
+        
+    if first == True:
+        #spawn_check = random.randint(1, 2)
+        spawn_check = 1
+        
 
-        if keys[pygame.K_RIGHT] and car.x < 300:
-            car.x += 117
+    first = False
 
-        if cone1.hitbox[1] >= car.hitbox[1] - 30 and cone1.hitbox[0] >= car.hitbox[0]:
-            if flag == 0:
-                cone1.hit()
-                check = False
-                flag = 1
-                score -= 1
+    if cone1.hitbox[1] >= 580 or cone2.hitbox[1] >= 580:
+        spawn_check = 2
+    
+    keys = pygame.key.get_pressed()
 
-        if cone1.hitbox[1] > 580 and check == True:
-            flag = 0
+    if keys[pygame.K_LEFT] and car.x >= 100:
+        car.x -= 117
+
+    if keys[pygame.K_RIGHT] and car.x < 300:
+        car.x += 117
+
+    if cone1.hitbox[1] >= car.hitbox[1] - 30 and cone1.hitbox[0] >= car.hitbox[0]:
+        if flag == 0:
+            cone1.hit()
+            check1 = False
+            flag = 1
+            score -= 1
+            
+
+    if cone1.hitbox[1] > 580 and check1 == True and cone1.visible == True:
+        flag = 0
+        if cone1.visible:
             score += 1
-            cone1.draw == False
+        cone1.y = -80
+        cone1.visible = False
         
-        print(spawn_check)
-        draw_screen(spawn_check)
+
+    '''if cone2.hitbox[1] >= car.hitbox[1] - 30 and cone2.hitbox[0] >= car.hitbox[0]:
+        if flag == 0:
+            cone2.hit()
+            check2 = False
+            flag = 1
+            score -= 1
+
+    if cone2.hitbox[1] > 580 and check2 == True:
+        flag = 0
+        score += 1
+        cone2.y = -80
+        cone2.visible == False'''
+
+               
+    print(cone1.hitbox)
+    draw_screen(spawn_check)
 
 
-def game_init():
-    global size
-    global screen
-    global car
-    global cone1
-    global cone2
-    global heart1
-    global heart2
-    global heart3
-    global flag
-    
-    pygame.init()
-    size = (500, 600)
-    screen = pygame.display.set_mode(size)
-    pygame.display.set_caption("Car Game")
-    car = player(85, 470, 64, 64)
-    cone1 = obstacle(95, -80, 64, 64, 10, True)
-    cone2 = obstacle(210, -80, 64, 64, 10, True)
-    
-    
 
-
-def main():
-    game_init()
-    execute_game()
-    pygame.quit()
-
-
-if __name__ == '__main__':
-    main()
 
 
 
