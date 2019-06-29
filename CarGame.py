@@ -116,16 +116,6 @@ while game:
         if event.type == pygame.QUIT:
             game = False
         
-    if first == True:
-        #spawn_check = random.randint(1, 2)
-        spawn_check = 1
-        
-
-    first = False
-
-    if cone1.hitbox[1] >= 580 or cone2.hitbox[1] >= 580:
-        spawn_check = 2
-    
     keys = pygame.key.get_pressed()
 
     if keys[pygame.K_LEFT] and car.x >= 100:
@@ -134,37 +124,10 @@ while game:
     if keys[pygame.K_RIGHT] and car.x < 300:
         car.x += 117
 
-    if cone1.hitbox[1] >= car.hitbox[1] - 30 and cone1.hitbox[0] >= car.hitbox[0]:
-        if flag == 0:
-            cone1.hit()
-            check1 = False
-            flag = 1
-            score -= 1
-            
-
-    if cone1.hitbox[1] > 580 and check1 == True and cone1.visible == True:
-        flag = 0
-        if cone1.visible:
-            score += 1
-        cone1.y = -80
-        cone1.visible = False
-        
-
-    '''if cone2.hitbox[1] >= car.hitbox[1] - 30 and cone2.hitbox[0] >= car.hitbox[0]:
-        if flag == 0:
-            cone2.hit()
-            check2 = False
-            flag = 1
-            score -= 1
-
-    if cone2.hitbox[1] > 580 and check2 == True:
-        flag = 0
-        score += 1
-        cone2.y = -80
-        cone2.visible == False'''
+    
 
                
-    print(cone1.hitbox)
+    print(cone2.hitbox)
     draw_screen(spawn_check)
 
 
